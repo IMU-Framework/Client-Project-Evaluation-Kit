@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>南港展覽公司辦公室設計專案｜簽約決策包</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700;900&family=Noto+Sans+TC:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBFAF6;
+    --ink:#1F2937;
+    --ink-soft:#5B6472;
+    --brass:#9A7B4F;
+    --brass-deep:#7C6239;
+    --blueprint:#8FA3B0;
+    --highlight:#EAE3D4;
+    --line:#DCD5C6;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      linear-gradient(var(--paper), var(--paper)),
+      repeating-linear-gradient(0deg, rgba(143,163,176,0.07) 0px, rgba(143,163,176,0.07) 1px, transparent 1px, transparent 32px),
+      repeating-linear-gradient(90deg, rgba(143,163,176,0.07) 0px, rgba(143,163,176,0.07) 1px, transparent 1px, transparent 32px);
+    background-blend-mode:normal;
+    color:var(--ink);
+    font-family:'Noto Sans TC', sans-serif;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'Roboto Mono', monospace;}
+  h1,h2,h3{font-family:'Noto Serif TC', serif;}
+
+  /* ---------- layout shell ---------- */
+  .shell{display:flex; max-width:1240px; margin:0 auto;}
+  .rail{
+    width:230px; flex-shrink:0; position:sticky; top:0; height:100vh;
+    padding:40px 10px 40px 28px; display:flex; flex-direction:column; gap:2px;
+  }
+  .rail-brand{font-family:'Noto Serif TC',serif; font-weight:700; font-size:15px; letter-spacing:0.06em; color:var(--ink); margin-bottom:6px;}
+  .rail-sub{font-size:11px; color:var(--ink-soft); margin-bottom:32px; letter-spacing:0.05em;}
+  .rail a{
+    display:flex; align-items:baseline; gap:10px; text-decoration:none; color:var(--ink-soft);
+    font-size:13px; padding:9px 10px; border-left:2px solid transparent; transition:all .25s ease;
+  }
+  .rail a .idx{font-family:'Roboto Mono',monospace; font-size:11px; color:var(--blueprint);}
+  .rail a.active{color:var(--ink); border-left-color:var(--brass); background:rgba(154,123,79,0.07); font-weight:500;}
+  .rail a:hover{color:var(--ink);}
+  .rail-foot{margin-top:auto; font-size:10.5px; color:var(--ink-soft); padding:10px; line-height:1.6;}
+
+  main{flex:1; min-width:0; padding:56px 48px 120px 40px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding-bottom:40px; margin-bottom:20px; border-bottom:1px solid var(--line);}
+  .eyebrow{font-family:'Roboto Mono',monospace; font-size:12px; letter-spacing:0.12em; color:var(--brass-deep); text-transform:uppercase; margin-bottom:18px;}
+  .hero h1{font-size:34px; font-weight:700; line-height:1.35; color:var(--ink); max-width:640px;}
+  .hero .accent{color:var(--brass-deep);}
+  .hero p.lead{margin-top:16px; color:var(--ink-soft); font-size:15px; max-width:520px;}
+
+  /* dimension line — signature element */
+  .dim-wrap{margin-top:36px;}
+  .dim-scale{display:flex; align-items:flex-end; height:34px; position:relative;}
+  .dim-bar{position:relative; height:1px; background:var(--blueprint); flex:1;}
+  .dim-tick{position:absolute; top:-6px; width:1px; height:12px; background:var(--blueprint);}
+  .dim-tick::after{content:''; position:absolute; top:0; left:-3px; width:7px; height:7px; border-top:1px solid var(--blueprint); border-right:1px solid var(--blueprint); transform:rotate(45deg);}
+  .dim-segments{display:flex; width:100%; margin-top:0;}
+  .dim-seg{
+    flex:1; text-align:center; padding:10px 4px 0; font-size:11.5px; color:var(--ink-soft);
+    border-right:1px dashed var(--line); cursor:pointer; transition:all .2s ease; position:relative;
+  }
+  .dim-seg:last-child{border-right:none;}
+  .dim-seg .rng{font-family:'Roboto Mono',monospace; font-size:12px; display:block;}
+  .dim-seg.active{color:var(--ink);}
+  .dim-seg.active .rng{color:var(--brass-deep); font-weight:700;}
+  .dim-seg.active::before{content:''; position:absolute; top:-34px; left:0; right:0; height:2px; background:var(--brass);}
+  .dim-callout{margin-top:8px; font-size:12px; color:var(--brass-deep); text-align:center; opacity:0; transition:opacity .2s;}
+  .dim-seg.active .dim-callout{opacity:1;}
+
+  /* ---------- sections ---------- */
+  section{padding-top:64px; scroll-margin-top:24px;}
+  section:first-of-type{padding-top:0;}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:22px;}
+  .sec-num{font-family:'Roboto Mono',monospace; font-size:13px; color:var(--blueprint); border:1px solid var(--line); border-radius:3px; padding:3px 8px;}
+  .sec-head h2{font-size:22px; font-weight:600; color:var(--ink);}
+  .sec-note{font-size:12.5px; color:var(--ink-soft); margin-top:14px; font-style:italic;}
+
+  .list-price-line{
+    font-size:13px; color:var(--ink-soft); margin-bottom:16px; padding:8px 14px;
+    background:#F4F1E9; border-radius:4px; display:inline-block;
+  }
+  .list-price-line .mono{color:var(--ink); font-weight:700;}
+
+  /* fee table */
+  .fee-table{width:100%; border-collapse:collapse; font-size:14px;}
+  .fee-table th{
+    background:var(--ink); color:var(--white); text-align:left; padding:12px 16px; font-weight:500;
+    font-size:12.5px; letter-spacing:0.02em;
+  }
+  .fee-table td{padding:14px 16px; border-bottom:1px solid var(--line); vertical-align:middle;}
+  .fee-table tr.row{cursor:pointer; transition:background .2s ease;}
+  .fee-table tr.row:hover{background:rgba(154,123,79,0.06);}
+  .fee-table tr.row.selected{background:var(--highlight);}
+  .fee-table td.num{font-family:'Roboto Mono',monospace; text-align:center;}
+  .fee-table tr.selected td{font-weight:700; color:var(--brass-deep);}
+  .fee-detail{
+    max-height:0; overflow:hidden; transition:max-height .35s ease, padding .35s ease;
+    background:#FFFDF9; border-left:3px solid var(--brass);
+  }
+  .fee-detail.open{max-height:160px; padding:16px 20px;}
+  .fee-detail .calc{font-family:'Roboto Mono',monospace; font-size:15px; color:var(--ink);}
+  .fee-detail .save{font-size:12.5px; color:var(--ink-soft); margin-top:6px;}
+
+  /* budget tabs */
+  .tabs{display:flex; gap:8px; margin-bottom:0; border-bottom:1px solid var(--line);}
+  .tab{
+    padding:12px 22px; font-size:14px; color:var(--ink-soft); cursor:pointer; position:relative;
+    font-family:'Noto Serif TC',serif; font-weight:600; transition:color .2s;
+  }
+  .tab.active{color:var(--ink);}
+  .tab.active::after{content:''; position:absolute; bottom:-1px; left:0; right:0; height:2px; background:var(--brass);}
+  .budget-panel{display:none; padding-top:28px;}
+  .budget-panel.active{display:block;}
+  .budget-grid{display:grid; grid-template-columns:1.1fr 1fr; gap:36px; align-items:center;}
+  .budget-figures .row{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dotted var(--line); font-size:14px;}
+  .budget-figures .row .label{color:var(--ink-soft);}
+  .budget-figures .row .val{font-family:'Roboto Mono',monospace;}
+  .budget-figures .row.total .val{font-weight:700; color:var(--brass-deep); font-size:16px;}
+  .bars{display:flex; flex-direction:column; gap:14px;}
+  .bar-row{display:flex; align-items:center; gap:10px;}
+  .bar-label{width:64px; font-size:12px; color:var(--ink-soft); flex-shrink:0; text-align:right;}
+  .bar-track{flex:1; background:#EFEBE1; height:20px; border-radius:2px; overflow:hidden;}
+  .bar-fill{height:100%; background:linear-gradient(90deg, var(--blueprint), var(--brass)); width:0; transition:width .6s cubic-bezier(.4,0,.2,1);}
+  .bar-val{font-family:'Roboto Mono',monospace; font-size:11.5px; color:var(--ink-soft); width:56px;}
+
+  /* vertical node timeline */
+  .timeline{position:relative; margin-left:9px; padding-left:30px;}
+  .timeline::before{
+    content:''; position:absolute; left:6px; top:8px; bottom:8px; width:1px;
+    background:linear-gradient(var(--blueprint), var(--blueprint) 42%, var(--brass) 42%, var(--brass) 58%, var(--brass-deep) 58%, var(--brass-deep));
+  }
+  .tl-node{position:relative; padding-bottom:22px; cursor:pointer;}
+  .tl-node:last-child{padding-bottom:0;}
+  .tl-dot{
+    position:absolute; left:-30px; top:3px; width:14px; height:14px; border-radius:50%;
+    background:var(--paper); border:2px solid var(--blueprint); transition:all .2s ease; z-index:1;
+  }
+  .tl-node.phase-after .tl-dot{border-color:var(--brass);}
+  .tl-node.open .tl-dot{background:var(--blueprint);}
+  .tl-node.phase-after.open .tl-dot{background:var(--brass);}
+  .tl-phase-tag{
+    font-family:'Roboto Mono',monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--ink-soft);
+    margin-bottom:6px; text-transform:uppercase;
+  }
+  .tl-card{
+    background:#fff; border:1px solid var(--line); border-radius:6px; padding:13px 16px;
+    transition:box-shadow .2s ease, border-color .2s ease;
+  }
+  .tl-node:hover .tl-card{border-color:var(--brass); box-shadow:0 4px 16px rgba(31,41,55,0.07);}
+  .tl-title{font-size:14.5px; font-weight:500; display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  .tl-title .num{font-family:'Roboto Mono',monospace; color:var(--blueprint); font-size:12px; margin-right:8px;}
+  .tl-node.phase-after .tl-title .num{color:var(--brass-deep);}
+  .tl-chev{color:var(--ink-soft); font-size:11px; transition:transform .25s; flex-shrink:0;}
+  .tl-node.open .tl-chev{transform:rotate(90deg);}
+  .tl-desc{max-height:0; overflow:hidden; transition:max-height .3s ease; font-size:13px; color:var(--ink-soft);}
+  .tl-node.open .tl-desc{max-height:100px; padding-top:8px;}
+
+  /* milestone node (簽約) */
+  .tl-milestone{position:relative; padding:6px 0 26px;}
+  .tl-milestone .tl-dot{
+    left:-33px; top:0; width:20px; height:20px; background:var(--brass); border:2px solid var(--brass-deep);
+    box-shadow:0 0 0 4px rgba(154,123,79,0.15);
+  }
+  .tl-milestone .tl-label{
+    font-family:'Noto Serif TC',serif; font-weight:700; font-size:14.5px; color:var(--brass-deep);
+    display:flex; align-items:center; gap:10px;
+  }
+  .tl-milestone .tl-label::after{content:''; flex:1; height:1px; background:var(--line);}
+
+  /* org chart */
+  .org-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .org-col{border:1px solid var(--line); border-radius:4px; overflow:hidden; transition:box-shadow .25s, border-color .25s;}
+  .org-col:hover{box-shadow:0 4px 18px rgba(31,41,55,0.08); border-color:var(--brass);}
+  .org-col-head{background:var(--ink); color:var(--white); padding:11px 14px; font-size:13px; font-weight:500; text-align:center;}
+  .org-col ul{list-style:none; padding:14px 14px 16px;}
+  .org-col li{font-size:12.5px; color:var(--ink-soft); padding:6px 0; position:relative; padding-left:14px;}
+  .org-col li::before{content:'—'; position:absolute; left:0; color:var(--blueprint); font-size:11px;}
+
+  /* needs table */
+  .need-row{border-bottom:1px solid var(--line);}
+  .need-q{display:flex; justify-content:space-between; align-items:center; padding:16px 4px; cursor:pointer;}
+  .need-q .t{font-size:14.5px; font-weight:500;}
+  .need-q .n{font-family:'Roboto Mono',monospace; font-size:11.5px; color:var(--blueprint); margin-right:12px;}
+  .need-a{max-height:0; overflow:hidden; transition:max-height .3s ease; font-size:13px; color:var(--ink-soft); padding:0 4px;}
+  .need-row.open .need-a{max-height:80px; padding-bottom:16px;}
+  .need-row .chev{transition:transform .25s; color:var(--ink-soft);}
+  .need-row.open .chev{transform:rotate(180deg);}
+
+  .placeholder-box{
+    border:1px dashed var(--line); border-radius:4px; padding:22px; font-size:13.5px; color:var(--ink-soft);
+    display:flex; align-items:center; gap:12px;
+  }
+
+  /* ---------------- scroll reveal ---------------- */
+  .reveal{
+    opacity:0; transform:translateY(18px);
+    transition:opacity .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1);
+    transition-delay:var(--d,0s);
+  }
+  .reveal.in{opacity:1; transform:translateY(0);}
+  .hero.reveal{transform:translateY(12px);}
+  @media (prefers-reduced-motion:reduce){
+    .reveal{transition:none !important; opacity:1 !important; transform:none !important;}
+  }
+
+  ::selection{background:var(--highlight);}
+
+  /* mobile rail */
+  .mobile-nav{display:none;}
+
+  @media (max-width:880px){
+    .shell{flex-direction:column;}
+    .rail{display:none;}
+    .mobile-nav{
+      display:flex; overflow-x:auto; gap:4px; position:sticky; top:0; z-index:10;
+      background:var(--paper); padding:14px 16px; border-bottom:1px solid var(--line);
+    }
+    .mobile-nav a{
+      flex-shrink:0; font-size:12.5px; padding:7px 12px; border:1px solid var(--line); border-radius:20px;
+      color:var(--ink-soft); text-decoration:none; font-family:'Roboto Mono',monospace;
+    }
+    .mobile-nav a.active{border-color:var(--brass); color:var(--brass-deep); background:var(--highlight);}
+    main{padding:36px 20px 100px;}
+    .hero h1{font-size:26px;}
+    .budget-grid{grid-template-columns:1fr;}
+    .org-grid{grid-template-columns:repeat(2,1fr);}
+    .dim-segments{flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body>
+
+<div class="mobile-nav" id="mobileNav"></div>
+
+<div class="shell">
+  <nav class="rail" id="rail">
+    <div class="rail-brand">IMU DESIGN</div>
+    <div class="rail-sub">簽約決策包 · SHEET INDEX</div>
+    <div id="railLinks"></div>
+    <div class="rail-foot">南港軟體園區二期<br>辦公室設計專案 · 430 坪</div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <div class="hero" id="hero">
+      <div class="eyebrow">Decision Kit · 南港展覽公司辦公室設計專案</div>
+      <h1>430 坪的決定，<br>用<span class="accent">一張圖</span>看懂每個選項。</h1>
+      <p class="lead">從優惠設計費、三種工程預算等級，到簽約前後的完整流程與分工——這裡是您做出最終決定前，需要的所有數字與細節。</p>
+
+      <div class="dim-wrap">
+        <div class="dim-segments" id="dimSegments"></div>
+      </div>
+    </div>
+
+    <!-- 1 -->
+    <section id="s1">
+      <div class="sec-head"><span class="sec-num">01</span><h2>專案概況</h2></div>
+      <div class="budget-figures reveal" style="max-width:520px;">
+        <div class="row"><span class="label">專案名稱</span><span class="val">南港軟體園區二期辦公室設計案</span></div>
+        <div class="row"><span class="label">專用坪數</span><span class="val">430 坪</span></div>
+        <div class="row"><span class="label">服務內容</span><span class="val">設計規劃＋監造</span></div>
+      </div>
+      <p class="sec-note reveal" style="--d:.1s;">設計與工程分離之模式，可使貴公司內部稽核與比價流程更為透明、公正。</p>
+    </section>
+
+    <!-- 2 -->
+    <section id="s2">
+      <div class="sec-head"><span class="sec-num">02</span><h2>優惠設計費</h2></div>
+      <p class="list-price-line reveal">牌價 <span class="mono">5,500</span> 元/坪（含稅，最小量 90 坪起）</p>
+      <table class="fee-table reveal" id="feeTable">
+        <thead>
+          <tr><th>坪數級距</th><th style="text-align:center;">優惠價（元/坪，含稅）</th><th style="text-align:center;">折扣幅度</th></tr>
+        </thead>
+        <tbody id="feeTbody"></tbody>
+      </table>
+      <p class="sec-note">點擊任一列級距，可展開試算細節。</p>
+      <p class="sec-note">優惠價不含複委託項目（消防、機電、建築繪圖與簽證費）；含協助發包及施工期間監管。</p>
+    </section>
+
+    <!-- 3 -->
+    <section id="s3">
+      <div class="sec-head"><span class="sec-num">03</span><h2>建議工程費預算</h2></div>
+      <div class="reveal" id="budgetWrap">
+        <div class="tabs" id="budgetTabs"></div>
+        <div id="budgetPanels"></div>
+      </div>
+      <p class="sec-note">大樓屋齡約 20 年，若涉及管線、機電或消防等基礎工程更新，建議以進階至旗艦區間編列預算，以確保工程順利進行。</p>
+    </section>
+
+    <!-- 4 -->
+    <section id="s4">
+      <div class="sec-head"><span class="sec-num">04</span><h2>簽約前／簽約後程序</h2></div>
+      <div class="timeline" id="timeline"></div>
+    </section>
+
+    <!-- 5 -->
+    <section id="s5">
+      <div class="sec-head"><span class="sec-num">05</span><h2>分工組織圖</h2></div>
+      <div class="org-grid" id="orgGrid"></div>
+    </section>
+
+    <!-- 6 -->
+    <section id="s6">
+      <div class="sec-head"><span class="sec-num">06</span><h2>需求確認表</h2></div>
+      <div id="needList"></div>
+    </section>
+
+    <!-- 7 -->
+    <section id="s7">
+      <div class="sec-head"><span class="sec-num">07</span><h2>合約樣張／交付物樣張</h2></div>
+      <div class="placeholder-box reveal">
+        <span class="mono" style="color:var(--blueprint);">⌗</span>
+        <span>詳見隨附之合約樣張與交付物清單（另行提供）。</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ---------------- data ---------------- */
+const SECTIONS = [
+  {id:'s1', label:'專案概況'},
+  {id:'s2', label:'優惠設計費'},
+  {id:'s3', label:'工程費預算'},
+  {id:'s4', label:'簽約程序'},
+  {id:'s5', label:'分工組織圖'},
+  {id:'s6', label:'需求確認表'},
+  {id:'s7', label:'合約樣張'},
+];
+
+const LIST_PRICE = 5500;
+const FEE_TIERS = [
+  {range:'90–199 坪', disc:5500, pct:'—', active:false},
+  {range:'200–399 坪', disc:5250, pct:'約 4.5%', active:false},
+  {range:'400–599 坪', disc:3500, pct:'約 36.4%', active:true, ping:430},
+  {range:'600 坪以上', disc:4800, pct:'約 12.7%', active:false},
+];
+
+const BUDGET_TIERS = [
+  {key:'std', label:'標準', perPing:45000, constr:19350000, design:1505000, total:20855000},
+  {key:'adv', label:'進階', perPing:70000, constr:30100000, design:1505000, total:31605000},
+  {key:'flag', label:'旗艦', perPing:140000, constr:60200000, design:1505000, total:61705000},
+];
+
+const STEPS_BEFORE = [
+  {t:'現場場勘', d:'實地勘查空間現況、樑柱、管線位置與大樓限制條件。'},
+  {t:'需求訪談', d:'了解部門配置、機能需求與品牌呈現方向。'},
+  {t:'平面配置提案', d:'依訪談結果提出初步空間配置與動線規劃。'},
+];
+const STEPS_AFTER = [
+  {t:'工程預算推演', d:'依平面提案細化各項工程費用估算。'},
+  {t:'實際期程安排', d:'確認進場、施工與完工的具體時間排程。'},
+  {t:'設計會議', d:'與甲方逐項確認設計細節與材料選用。'},
+  {t:'消防與室裝審查', d:'配合法規進行消防與室內裝修審查程序。'},
+  {t:'設計圖說繪製與文件製作', d:'完成施工圖說與相關文件，供發包使用。'},
+  {t:'廠商報價', d:'協助彙整並比較各協力廠商報價。'},
+  {t:'施工期間監管（監造）', d:'施工期間定期到場監督品質與進度。'},
+];
+
+const ORG = [
+  {title:'甲方', items:['董事長特助（主要窗口／決策者）','行政經理（共同決策者）','其他高階主管（列席重大會議）']},
+  {title:'乙方｜IMU Design', items:['主持設計師（專案負責人）','設計／繪圖團隊','監造工程師']},
+  {title:'協力廠商（依進度加入）', items:['統包／裝修工程商','機電工程商','消防工程商','系統櫃／木作廠商','招牌／CI 工程商']},
+  {title:'第三方單位', items:['大樓管理委員會','消防審查機關','建管單位（如需室裝審查）','房東／物業管理（租賃／購買待確認）']},
+];
+
+const NEEDS = [
+  {q:'空間需求', a:'部門配置、人數規模、未來成長規劃'},
+  {q:'機能需求', a:'接待／品牌展示區、大型簡報室、樣品與道具倉儲'},
+  {q:'品牌需求', a:'企業識別呈現、對外形象與訪客體驗'},
+  {q:'決策架構', a:'決策者與會簽窗口、核決流程、重大會議參與者'},
+  {q:'時程與預算', a:'期望進場／完工時間、預算上限與分期付款方式'},
+];
+
+const fmt = n => n.toLocaleString('en-US');
+
+/* ---------------- scroll reveal ---------------- */
+const revealObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('in');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, {threshold:0.12, rootMargin:'0px 0px -60px 0px'});
+
+function reveal(el, delay=0){
+  if(!el) return;
+  el.classList.add('reveal');
+  if(delay) el.style.setProperty('--d', delay+'s');
+  revealObserver.observe(el);
+}
+
+// section headings all fade up the same way as their section scrolls into view
+document.querySelectorAll('.sec-head').forEach(el=>reveal(el));
+// static section-1 / section-3 / section-7 blocks (classes already applied in markup)
+document.querySelectorAll('#s1 .reveal, #s2 .reveal, #s3 .reveal, #s7 .reveal').forEach(el=> revealObserver.observe(el));
+
+// hero: reveal immediately on load rather than on scroll
+const heroEl = document.getElementById('hero');
+heroEl.classList.add('reveal');
+requestAnimationFrame(()=> setTimeout(()=> heroEl.classList.add('in'), 60));
+
+/* ---------------- render: nav rails ---------------- */
+function renderNav(){
+  const rail = document.getElementById('railLinks');
+  const mob = document.getElementById('mobileNav');
+  SECTIONS.forEach((s,i)=>{
+    const a1 = document.createElement('a');
+    a1.href = '#'+s.id; a1.dataset.target = s.id;
+    a1.innerHTML = `<span class="idx">${String(i+1).padStart(2,'0')}</span>${s.label}`;
+    rail.appendChild(a1);
+
+    const a2 = document.createElement('a');
+    a2.href = '#'+s.id; a2.dataset.target = s.id;
+    a2.textContent = s.label;
+    mob.appendChild(a2);
+  });
+}
+renderNav();
+
+function setActive(id){
+  document.querySelectorAll('.rail a, .mobile-nav a').forEach(a=>{
+    a.classList.toggle('active', a.dataset.target === id);
+  });
+}
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) setActive(e.target.id); });
+}, {rootMargin:'-30% 0px -60% 0px'});
+SECTIONS.forEach(s=> io.observe(document.getElementById(s.id)));
+setActive('s1');
+
+/* ---------------- dimension hero ---------------- */
+function renderDim(){
+  const wrap = document.getElementById('dimSegments');
+  FEE_TIERS.forEach((t,i)=>{
+    const el = document.createElement('div');
+    el.className = 'dim-seg' + (t.active ? ' active' : '');
+    el.innerHTML = `<span class="rng mono">${t.range}</span>${t.ping ? `<div class="dim-callout">本案 ${t.ping} 坪 →</div>` : ''}`;
+    el.addEventListener('click', ()=>{
+      document.querySelectorAll('.dim-seg').forEach(s=>s.classList.remove('active'));
+      el.classList.add('active');
+      selectFeeRow(i);
+      document.getElementById('s2').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    wrap.appendChild(el);
+  });
+}
+renderDim();
+
+/* ---------------- fee table ---------------- */
+let feeOpenIndex = 2;
+function renderFee(){
+  const tbody = document.getElementById('feeTbody');
+  tbody.innerHTML = '';
+  FEE_TIERS.forEach((t,i)=>{
+    const tr = document.createElement('tr');
+    tr.className = 'row' + (i===feeOpenIndex ? ' selected':'');
+    tr.innerHTML = `<td>${t.range}${t.ping? ' <span class="mono" style="font-size:11px;color:var(--brass-deep);">（本案適用）</span>':''}</td>
+      <td class="num">${fmt(t.disc)}</td><td class="num">${t.pct}</td>`;
+    tr.addEventListener('click', ()=>selectFeeRow(i));
+    tbody.appendChild(tr);
+
+    const detailTr = document.createElement('tr');
+    const detailTd = document.createElement('td');
+    detailTd.colSpan = 3; detailTd.style.padding = '0'; detailTd.style.border='none';
+    const detail = document.createElement('div');
+    detail.className = 'fee-detail' + (i===feeOpenIndex ? ' open':'');
+    detail.id = 'feeDetail'+i;
+    const ping = t.ping || 430;
+    const total = t.disc * ping;
+    const listTotal = LIST_PRICE * ping;
+    detail.innerHTML = `<div class="calc">${ping} 坪 × ${fmt(t.disc)} 元/坪 ＝ ${fmt(total)} 元（含稅）</div>
+      <div class="save">較牌價總額 ${fmt(listTotal)} 元，節省 ${fmt(listTotal-total)} 元。</div>`;
+    detailTd.appendChild(detail);
+    detailTr.appendChild(detailTd);
+    tbody.appendChild(detailTr);
+  });
+}
+function selectFeeRow(i){
+  feeOpenIndex = i;
+  renderFee();
+}
+renderFee();
+
+/* ---------------- budget tabs ---------------- */
+let activeBudget = 'std';
+function renderBudget(){
+  const tabsEl = document.getElementById('budgetTabs');
+  const panelsEl = document.getElementById('budgetPanels');
+  tabsEl.innerHTML=''; panelsEl.innerHTML='';
+  BUDGET_TIERS.forEach(b=>{
+    const tab = document.createElement('div');
+    tab.className = 'tab' + (b.key===activeBudget ? ' active':'');
+    tab.textContent = b.label;
+    tab.addEventListener('click', ()=>{ activeBudget=b.key; renderBudget(); });
+    tabsEl.appendChild(tab);
+
+    const panel = document.createElement('div');
+    panel.className = 'budget-panel' + (b.key===activeBudget ? ' active':'');
+    const maxTotal = Math.max(...BUDGET_TIERS.map(x=>x.total));
+    panel.innerHTML = `
+      <div class="budget-grid">
+        <div class="budget-figures">
+          <div class="row"><span class="label">每坪造價</span><span class="val">${fmt(b.perPing)} 元</span></div>
+          <div class="row"><span class="label">工程費總額（430坪）</span><span class="val">${fmt(b.constr)} 元</span></div>
+          <div class="row"><span class="label">設計費（優惠價）</span><span class="val">${fmt(b.design)} 元</span></div>
+          <div class="row total"><span class="label">專案總金額</span><span class="val">${fmt(b.total)} 元</span></div>
+        </div>
+        <div class="bars" id="bars-${b.key}"></div>
+      </div>`;
+    panelsEl.appendChild(panel);
+
+    const barsWrap = panel.querySelector(`#bars-${b.key}`);
+    BUDGET_TIERS.forEach(x=>{
+      const row = document.createElement('div');
+      row.className = 'bar-row';
+      const pct = (x.total/maxTotal*100).toFixed(0);
+      row.innerHTML = `<div class="bar-label">${x.label}</div><div class="bar-track"><div class="bar-fill" style="width:0"></div></div><div class="bar-val mono">${(x.total/10000).toFixed(0)}萬</div>`;
+      barsWrap.appendChild(row);
+      requestAnimationFrame(()=>{
+        setTimeout(()=>{ row.querySelector('.bar-fill').style.width = pct+'%'; }, 60);
+      });
+      if(x.key===b.key){ row.querySelector('.bar-label').style.color='var(--brass-deep)'; row.querySelector('.bar-label').style.fontWeight='700'; }
+    });
+  });
+}
+renderBudget();
+
+/* ---------------- timeline (vertical node-cards) ---------------- */
+function renderTimeline(){
+  const c = document.getElementById('timeline');
+  let step = 0;
+
+  STEPS_BEFORE.forEach((s,i)=>{
+    const el = document.createElement('div');
+    el.className = 'tl-node phase-before';
+    if(i===0) el.innerHTML = `<div class="tl-phase-tag">簽約前</div>`;
+    el.innerHTML += `<div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-title"><span><span class="num">${String(i+1).padStart(2,'0')}</span>${s.t}</span><span class="tl-chev">▸</span></div>
+        <div class="tl-desc">${s.d}</div>
+      </div>`;
+    el.addEventListener('click', ()=> el.classList.toggle('open'));
+    c.appendChild(el);
+    reveal(el, Math.min(step++, 6) * 0.07);
+  });
+
+  const milestone = document.createElement('div');
+  milestone.className = 'tl-milestone';
+  milestone.innerHTML = `<div class="tl-dot"></div><div class="tl-label">簽約</div>`;
+  c.appendChild(milestone);
+  reveal(milestone, Math.min(step++, 6) * 0.07);
+
+  STEPS_AFTER.forEach((s,i)=>{
+    const el = document.createElement('div');
+    el.className = 'tl-node phase-after';
+    if(i===0) el.innerHTML = `<div class="tl-phase-tag">簽約後</div>`;
+    el.innerHTML += `<div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-title"><span><span class="num">${String(i+1).padStart(2,'0')}</span>${s.t}</span><span class="tl-chev">▸</span></div>
+        <div class="tl-desc">${s.d}</div>
+      </div>`;
+    el.addEventListener('click', ()=> el.classList.toggle('open'));
+    c.appendChild(el);
+    reveal(el, Math.min(step++, 6) * 0.07);
+  });
+}
+renderTimeline();
+
+/* ---------------- org chart ---------------- */
+function renderOrg(){
+  const grid = document.getElementById('orgGrid');
+  ORG.forEach((col,i)=>{
+    const el = document.createElement('div');
+    el.className = 'org-col';
+    el.innerHTML = `<div class="org-col-head">${col.title}</div><ul>${col.items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+    grid.appendChild(el);
+    reveal(el, i * 0.08);
+  });
+}
+renderOrg();
+
+/* ---------------- needs accordion ---------------- */
+function renderNeeds(){
+  const c = document.getElementById('needList');
+  NEEDS.forEach((n,i)=>{
+    const row = document.createElement('div');
+    row.className = 'need-row';
+    row.innerHTML = `<div class="need-q"><div><span class="n">${String(i+1).padStart(2,'0')}</span><span class="t">${n.q}</span></div><span class="chev">⌄</span></div>
+      <div class="need-a">${n.a}</div>`;
+    row.querySelector('.need-q').addEventListener('click', ()=> row.classList.toggle('open'));
+    c.appendChild(row);
+    reveal(row, i * 0.06);
+  });
+}
+renderNeeds();
+</script>
+</body>
+</html>
