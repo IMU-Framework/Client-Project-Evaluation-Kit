@@ -552,7 +552,7 @@ class Component extends DCLogic {
 
   checkPassword = () => {
     const val = this.passwordInputRef.current ? this.passwordInputRef.current.value : '';
-    if (val === 'chanchao') {
+    if (val === 'chanchao-celia') {
       try { sessionStorage.setItem('imu094-unlocked', '1'); } catch (e) {}
       this.setState({ unlocked: true, gateError: '' });
     } else {
