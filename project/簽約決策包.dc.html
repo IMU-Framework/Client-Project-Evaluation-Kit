@@ -30,17 +30,55 @@
       #org-grid > div { grid-column: 1 !important; }
       #samples-grid { grid-template-columns: 1fr !important; }
       #client-logo-box { order: -1 !important; margin: 0 auto 16px !important; }
+      #footer-contact { text-align: left !important; }
+    }
+
+    /* ---- MOBILE (≤640): swipeable no-wrap section nav; logo stays fixed ---- */
+    @media (max-width: 640px) {
+      #section-nav {
+        flex: 1 1 auto; min-width: 0; flex-wrap: nowrap; justify-content: flex-start;
+        gap: 20px; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; padding: 2px 0;
+        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent 100%);
+        mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent 100%);
+      }
+      #section-nav::-webkit-scrollbar { display: none; }
+      #section-nav a { white-space: nowrap; flex-shrink: 0; }
+    }
+
+    /* ---- DESKTOP (≥1025): top bar becomes a vertical left sidebar ---- */
+    @media (min-width: 1025px) {
+      #topbar { display: none; }
+      #side-nav { display: flex !important; }
+      #doc-root { padding-left: 236px; }
     }
   </style>
 </helmet>
 
-<div style="--font-display: {{ fontDisplay }}; --font-zh: {{ fontZh }}; --font-mono: {{ fontMono }}; font-family: var(--font-zh); color: var(--imu-neutral-800); background: var(--imu-white); min-height: 100vh; -webkit-font-smoothing: antialiased;">
+<div id="doc-root" style="--font-display: {{ fontDisplay }}; --font-zh: {{ fontZh }}; --font-mono: {{ fontMono }}; font-family: var(--font-zh); color: var(--imu-neutral-800); background: var(--imu-white); min-height: 100vh; -webkit-font-smoothing: antialiased;">
+
+  <!-- ============ SIDE NAV (desktop ≥1025px) ============ -->
+  <nav id="side-nav" style="display: none; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; width: 236px; padding: 28px 24px; border-right: 1px solid var(--border-hairline); background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); z-index: 20; overflow-y: auto;">
+    <img src="assets/logo-badge-blue.png" alt="IMU Framework Design" onClick="{{ scrollToTop }}" style="height: 32px; width: 32px; display: block; border-radius: 50%; cursor: pointer; margin-bottom: 28px;">
+    <div style="font-family: var(--font-mono); font-size: var(--fs-overline); letter-spacing: var(--ls-overline); text-transform: uppercase; color: var(--text-subtle); margin-bottom: 14px;">目錄 · CONTENTS</div>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <a href="#overview" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">01</span>專案概況</a>
+      <a href="#fee" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">02</span>設計費</a>
+      <a href="#budget" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">03</span>工程預算</a>
+      <a href="#process" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">04</span>程序</a>
+      <a href="#timeline" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">05</span>時程</a>
+      <a href="#org" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">06</span>分工</a>
+      <a href="#needs" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">07</span>需求訪談</a>
+      <a href="#samples" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">08</span>參考風格</a>
+    </div>
+  </nav>
 
   <!-- ============ HEADER ============ -->
-  <header style="position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-hairline);">
+  <header id="topbar" style="position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-hairline);">
     <div style="max-width: 920px; margin: 0 auto; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
       <img src="assets/logo-badge-blue.png" alt="IMU Framework Design" onClick="{{ scrollToTop }}" style="height: 32px; width: 32px; display: block; border-radius: 50%; cursor: pointer;">
-      <nav style="display: flex; gap: 18px; align-items: center;">
+      <nav id="section-nav" style="display: {{ contentDisplayFlex }}; gap: 18px; align-items: center;">
+        <a href="#overview" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted);" style-hover="color: var(--imu-blue-600);">專案概況</a>
         <a href="#fee" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted);" style-hover="color: var(--imu-blue-600);">設計費</a>
         <a href="#budget" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted);" style-hover="color: var(--imu-blue-600);">工程預算</a>
         <a href="#process" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted);" style-hover="color: var(--imu-blue-600);">程序</a>
@@ -76,8 +114,22 @@
       </div>
     </div>
 
+    <!-- ============ 密碼保護 ============ -->
+    <div id="password-gate" style="display: {{ gateDisplay }}; padding: 48px 0 56px; border-bottom: 1px solid var(--border-hairline);">
+      <div style="font-family: var(--font-mono); font-size: var(--fs-overline); letter-spacing: var(--ls-overline); text-transform: uppercase; color: var(--imu-blue-600); margin-bottom: 16px;">內容保護 · PROTECTED CONTENT</div>
+      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0 0 8px;">請輸入密碼以檢視完整內容</h2>
+      <p style="font-size: 14px; line-height: var(--lh-relaxed); color: var(--text-muted); margin: 0 0 20px; max-width: 480px;">以下內容僅供受文客戶檢視，請輸入通行密碼。</p>
+      <div style="display: flex; gap: 10px; max-width: 360px; flex-wrap: wrap;">
+        <input ref="{{ passwordInputRef }}" type="password" placeholder="請輸入密碼" onKeyDown="{{ onPasswordKeyDown }}" style="flex: 1; min-width: 180px; padding: 10px 14px; font-size: 14px; border: 1px solid {{ gateBorder }}; border-radius: var(--radius-sm, 4px); font-family: var(--font-zh); outline: none; color: var(--text-strong);">
+        <button onClick="{{ checkPassword }}" style="padding: 10px 20px; font-size: 14px; font-weight: var(--fw-semibold); color: var(--imu-white); background: var(--imu-blue-600); border: none; border-radius: var(--radius-sm, 4px); cursor: pointer; font-family: var(--font-zh);">確認</button>
+      </div>
+      <div style="margin-top: 10px; min-height: 16px; font-size: 12.5px; color: var(--imu-danger, #c0392f);">{{ gateError }}</div>
+    </div>
+
+    <div style="display: {{ contentDisplayBlock }};">
+
     <!-- ============ 01 專案概況 ============ -->
-    <section data-screen-label="01 專案概況" style="padding-top: 64px;">
+    <section id="overview" data-screen-label="01 專案概況" style="padding-top: 64px; scroll-margin-top: 24px;">
       <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px;">
         <span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-blue-600); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 2px 8px;">01</span>
         <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0;">專案概況</h2>
@@ -486,17 +538,19 @@
         </div>
       </div>
     </section>
+
+    </div>
   </main>
 
   <!-- ============ FOOTER ============ -->
-  <footer data-screen-label="頁尾" style="background: var(--imu-neutral-100); color: var(--text-muted);">
+  <footer data-screen-label="頁尾" style="display: {{ contentDisplayBlock }}; background: var(--imu-neutral-100); color: var(--text-muted);">
     <div style="max-width: 920px; margin: 0 auto; padding: 56px 28px 40px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap;">
         <div>
           <img src="assets/logo-banner.png" alt="IMU Framework Design" style="height: 48px; display: block; margin-bottom: 18px">
           <div style="font-family: var(--font-mono); font-size: 11px; line-height: 1.9; letter-spacing: var(--ls-overline); text-transform: uppercase; color: var(--text-subtle)">DATA · 2D · 3D</div>
         </div>
-        <div style="font-size: 13px; line-height: 1.9; text-align: right;">
+        <div id="footer-contact" style="font-size: 13px; line-height: 1.9; text-align: right;">
           <div style="font-size: 11px; font-weight: 300; color: var(--text-subtle); margin-bottom: 6px">室內設計師．建築物室內裝修工程管理乙級技術士</div>
           <div style="color: var(--text-strong); font-weight: var(--fw-medium);">簡宛昱 Ivia Chien</div>
           <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16px">0911-026-175 · <a href="mailto:imuchien@gmail.com" style="color: var(--imu-blue-600);">imuchien@gmail.com</a></div>
@@ -519,9 +573,37 @@
   &quot;expandAll&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;呈現方式&quot; }
 }">
 class Component extends DCLogic {
-  state = { feeOpen: 2, budget: 'std', tlOpen: {}, barsIn: false };
+  state = {
+    feeOpen: 2,
+    budget: 'std',
+    tlOpen: {},
+    barsIn: false,
+    unlocked: (() => {
+      try { return sessionStorage.getItem('imu094-unlocked') === '1'; } catch (e) { return false; }
+    })(),
+    gateError: '',
+  };
 
   budgetImgRef = React.createRef();
+  passwordInputRef = React.createRef();
+
+  checkPassword = () => {
+    const val = this.passwordInputRef.current ? this.passwordInputRef.current.value : '';
+    if (val === 'chanchao-celia') {
+      try { sessionStorage.setItem('imu094-unlocked', '1'); } catch (e) {}
+      this.setState({ unlocked: true, gateError: '' });
+    } else {
+      this.setState({ gateError: '密碼錯誤，請再試一次。' });
+      if (this.passwordInputRef.current) {
+        this.passwordInputRef.current.value = '';
+        this.passwordInputRef.current.focus();
+      }
+    }
+  };
+
+  onPasswordKeyDown = (e) => {
+    if (e.key === 'Enter') this.checkPassword();
+  };
 
   componentDidMount() {
     this._barsTimer = setTimeout(() => this.setState({ barsIn: true }), 120);
@@ -720,7 +802,17 @@ class Component extends DCLogic {
       };
     });
 
+    const unlocked = this.state.unlocked;
     return {
+      unlocked,
+      gateDisplay: unlocked ? 'none' : 'block',
+      contentDisplayBlock: unlocked ? 'block' : 'none',
+      contentDisplayFlex: unlocked ? 'flex' : 'none',
+      gateBorder: this.state.gateError ? 'var(--imu-danger, #c0392f)' : 'var(--border-hairline)',
+      gateError: this.state.gateError,
+      passwordInputRef: this.passwordInputRef,
+      checkPassword: this.checkPassword,
+      onPasswordKeyDown: this.onPasswordKeyDown,
       tlSignDate: '2026 年 7 月底',
       tlMoveInDate: '2027 年 2 月底',
       tlMonths,
