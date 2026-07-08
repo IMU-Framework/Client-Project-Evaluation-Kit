@@ -80,8 +80,7 @@
     <!-- ============ 密碼保護 ============ -->
     <div id="password-gate" style="display: {{ gateDisplay }}; padding: 48px 0 56px; border-bottom: 1px solid var(--border-hairline);">
       <div style="font-family: var(--font-mono); font-size: var(--fs-overline); letter-spacing: var(--ls-overline); text-transform: uppercase; color: var(--imu-blue-600); margin-bottom: 16px;">內容保護 · PROTECTED CONTENT</div>
-      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0 0 8px;">請輸入密碼以檢視完整內容</h2>
-      <p style="font-size: 14px; line-height: var(--lh-relaxed); color: var(--text-muted); margin: 0 0 20px; max-width: 480px;">以下章節僅供受邀客戶檢視，請輸入貴公司獲得的通行密碼。</p>
+      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0 0 20px;">請輸入密碼以檢視完整內容</h2>
       <div style="display: flex; gap: 10px; max-width: 360px; flex-wrap: wrap;">
         <input ref="{{ passwordInputRef }}" type="password" placeholder="請輸入密碼" onKeyDown="{{ onPasswordKeyDown }}" style="flex: 1; min-width: 180px; padding: 10px 14px; font-size: 14px; border: 1px solid {{ gateBorder }}; border-radius: var(--radius-sm, 4px); font-family: var(--font-zh); outline: none; color: var(--text-strong);">
         <button onClick="{{ checkPassword }}" style="padding: 10px 20px; font-size: 14px; font-weight: var(--fw-semibold); color: var(--imu-white); background: var(--imu-blue-600); border: none; border-radius: var(--radius-sm, 4px); cursor: pointer; font-family: var(--font-zh);">確認</button>
