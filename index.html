@@ -41,7 +41,7 @@
   <header style="position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-hairline);">
     <div style="max-width: 920px; margin: 0 auto; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
       <img src="assets/logo-badge-blue.png" alt="IMU Framework Design" onClick="{{ scrollToTop }}" style="height: 32px; width: 32px; display: block; border-radius: 50%; cursor: pointer;">
-      <nav style="display: flex; gap: 18px; align-items: center;">
+      <nav style="display: {{ contentDisplayFlex }}; gap: 18px; align-items: center;">
         <a href="#fee" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted);" style-hover="color: var(--imu-blue-600);">設計費</a>
         <a href="#budget" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted);" style-hover="color: var(--imu-blue-600);">工程預算</a>
         <a href="#process" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted);" style-hover="color: var(--imu-blue-600);">程序</a>
@@ -76,6 +76,20 @@
         </div>
       </div>
     </div>
+
+    <!-- ============ 密碼保護 ============ -->
+    <div id="password-gate" style="display: {{ gateDisplay }}; padding: 48px 0 56px; border-bottom: 1px solid var(--border-hairline);">
+      <div style="font-family: var(--font-mono); font-size: var(--fs-overline); letter-spacing: var(--ls-overline); text-transform: uppercase; color: var(--imu-blue-600); margin-bottom: 16px;">內容保護 · PROTECTED CONTENT</div>
+      <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0 0 8px;">請輸入密碼以檢視完整內容</h2>
+      <p style="font-size: 14px; line-height: var(--lh-relaxed); color: var(--text-muted); margin: 0 0 20px; max-width: 480px;">以下章節僅供受邀客戶檢視，請輸入貴公司獲得的通行密碼。</p>
+      <div style="display: flex; gap: 10px; max-width: 360px; flex-wrap: wrap;">
+        <input ref="{{ passwordInputRef }}" type="password" placeholder="請輸入密碼" onKeyDown="{{ onPasswordKeyDown }}" style="flex: 1; min-width: 180px; padding: 10px 14px; font-size: 14px; border: 1px solid {{ gateBorder }}; border-radius: var(--radius-sm, 4px); font-family: var(--font-zh); outline: none; color: var(--text-strong);">
+        <button onClick="{{ checkPassword }}" style="padding: 10px 20px; font-size: 14px; font-weight: var(--fw-semibold); color: var(--imu-white); background: var(--imu-blue-600); border: none; border-radius: var(--radius-sm, 4px); cursor: pointer; font-family: var(--font-zh);">確認</button>
+      </div>
+      <div style="margin-top: 10px; min-height: 16px; font-size: 12.5px; color: var(--imu-danger, #c0392f);">{{ gateError }}</div>
+    </div>
+
+    <div style="display: {{ contentDisplayBlock }};">
 
     <!-- ============ 01 專案概況 ============ -->
     <section data-screen-label="01 專案概況" style="padding-top: 64px;">
@@ -487,10 +501,12 @@
         </div>
       </div>
     </section>
+
+    </div>
   </main>
 
   <!-- ============ FOOTER ============ -->
-  <footer data-screen-label="頁尾" style="background: var(--imu-neutral-100); color: var(--text-muted);">
+  <footer data-screen-label="頁尾" style="display: {{ contentDisplayBlock }}; background: var(--imu-neutral-100); color: var(--text-muted);">
     <div style="max-width: 920px; margin: 0 auto; padding: 56px 28px 40px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap;">
         <div>
@@ -520,9 +536,37 @@
   &quot;expandAll&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;呈現方式&quot; }
 }">
 class Component extends DCLogic {
-  state = { feeOpen: 2, budget: 'std', tlOpen: {}, barsIn: false };
+  state = {
+    feeOpen: 2,
+    budget: 'std',
+    tlOpen: {},
+    barsIn: false,
+    unlocked: (() => {
+      try { return sessionStorage.getItem('imu094-unlocked') === '1'; } catch (e) { return false; }
+    })(),
+    gateError: '',
+  };
 
   budgetImgRef = React.createRef();
+  passwordInputRef = React.createRef();
+
+  checkPassword = () => {
+    const val = this.passwordInputRef.current ? this.passwordInputRef.current.value : '';
+    if (val === 'chanchao') {
+      try { sessionStorage.setItem('imu094-unlocked', '1'); } catch (e) {}
+      this.setState({ unlocked: true, gateError: '' });
+    } else {
+      this.setState({ gateError: '密碼錯誤，請再試一次。' });
+      if (this.passwordInputRef.current) {
+        this.passwordInputRef.current.value = '';
+        this.passwordInputRef.current.focus();
+      }
+    }
+  };
+
+  onPasswordKeyDown = (e) => {
+    if (e.key === 'Enter') this.checkPassword();
+  };
 
   componentDidMount() {
     this._barsTimer = setTimeout(() => this.setState({ barsIn: true }), 120);
@@ -721,7 +765,17 @@ class Component extends DCLogic {
       };
     });
 
+    const unlocked = this.state.unlocked;
     return {
+      unlocked,
+      gateDisplay: unlocked ? 'none' : 'block',
+      contentDisplayBlock: unlocked ? 'block' : 'none',
+      contentDisplayFlex: unlocked ? 'flex' : 'none',
+      gateBorder: this.state.gateError ? 'var(--imu-danger, #c0392f)' : 'var(--border-hairline)',
+      gateError: this.state.gateError,
+      passwordInputRef: this.passwordInputRef,
+      checkPassword: this.checkPassword,
+      onPasswordKeyDown: this.onPasswordKeyDown,
       tlSignDate: '2026 年 7 月底',
       tlMoveInDate: '2027 年 2 月底',
       tlMonths,
