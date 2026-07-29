@@ -25,6 +25,9 @@
     ::selection { background: var(--imu-blue-100); }
     @media (max-width: 640px) {
       #budget-grid { grid-template-columns: 1fr !important; }
+      [data-pkg-row] { grid-template-columns: 1fr 96px !important; }
+      [data-pkg-sm-hide] { display: none !important; }
+      [data-pkg-summary] { grid-template-columns: 1fr !important; }
       #client-logo-box { width: 120px !important; margin: 0 auto !important; padding: 12px 13px !important; }
       #org-grid { grid-template-columns: 1fr !important; }
       #org-grid > div { grid-column: 1 !important; }
@@ -36,9 +39,16 @@
     /* ---- MOBILE (≤640): swipeable no-wrap section nav; logo stays fixed ---- */
     @media (max-width: 640px) {
       #section-nav {
-        flex: 1 1 auto; min-width: 0; flex-wrap: nowrap; justify-content: flex-start;
-        gap: 20px; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; padding: 2px 0;
+        flex: 1 1 auto;
+        min-width: 0;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 20px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 2px 0;
         -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent 100%);
         mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent 100%);
       }
@@ -52,31 +62,45 @@
       #side-nav { display: flex !important; }
       #doc-root { padding-left: 236px; }
     }
+
+    /* ---- animate on scroll — visible by default; JS hides only what is
+           off-screen, so content can never get stuck invisible ---- */
+    .reveal-on [data-reveal] {
+      transition: opacity 0.7s var(--ease-standard, cubic-bezier(0.4,0,0.2,1)),
+                  transform 0.7s var(--ease-standard, cubic-bezier(0.4,0,0.2,1));
+    }
+    [data-reveal].reveal-hidden {
+      opacity: 0;
+      transform: translateY(26px);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      [data-reveal].reveal-hidden { opacity: 1 !important; transform: none !important; transition: none !important; }
+    }
   </style>
 </helmet>
 
 <div id="doc-root" style="--font-display: {{ fontDisplay }}; --font-zh: {{ fontZh }}; --font-mono: {{ fontMono }}; font-family: var(--font-zh); color: var(--imu-neutral-800); background: var(--imu-white); min-height: 100vh; -webkit-font-smoothing: antialiased;">
 
-  <!-- ============ SIDE NAV (desktop ≥1025px) ============ -->
-  <nav id="side-nav" style="display: none; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; width: 236px; padding: 28px 24px; border-right: 1px solid var(--border-hairline); background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); z-index: 20; overflow-y: auto;">
-    <img src="assets/logo-badge-blue.png" alt="IMU Framework Design" onClick="{{ scrollToTop }}" style="height: 32px; width: 32px; display: block; border-radius: 50%; cursor: pointer; margin-bottom: 28px;">
-    <div style="font-family: var(--font-mono); font-size: var(--fs-overline); letter-spacing: var(--ls-overline); text-transform: uppercase; color: var(--text-subtle); margin-bottom: 14px;">目錄 · CONTENTS</div>
-    <div style="display: flex; flex-direction: column; gap: 2px;">
-      <a href="#overview" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">01</span>專案概況</a>
-      <a href="#fee" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">02</span>設計費</a>
-      <a href="#budget" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">03</span>工程預算</a>
-      <a href="#process" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">04</span>程序</a>
-      <a href="#timeline" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">05</span>時程</a>
-      <a href="#org" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">06</span>分工</a>
-      <a href="#needs" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">07</span>需求訪談</a>
-      <a href="#samples" style="display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--radius-sm, 4px); font-size: 13px; color: var(--text-muted);" style-hover="color: var(--imu-blue-600); background: var(--imu-blue-50);"><span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--imu-peri-400);">08</span>參考風格</a>
+  <!-- ============ SIDEBAR NAV (desktop only) ============ -->
+  <nav id="side-nav" style="display: none; position: fixed; top: 0; left: 0; bottom: 0; width: 236px; box-sizing: border-box; z-index: 20; flex-direction: column; padding: 30px 26px; border-right: 1px solid var(--border-hairline); background: rgba(255,255,255,0.96); backdrop-filter: blur(8px); overflow-y: auto;">
+    <img src="assets/logo-badge-blue.png" alt="IMU Framework Design" onClick="{{ scrollToTop }}" style="height: 38px; width: 38px; display: block; border-radius: 50%; cursor: pointer;">
+    <div style="font-family: var(--font-mono); font-size: var(--fs-overline); letter-spacing: var(--ls-overline); text-transform: uppercase; color: var(--text-subtle); margin: 26px 0 12px;">目錄 · CONTENTS</div>
+    <div style="display: flex; flex-direction: column; gap: 1px;">
+      <a href="#overview" style="display: flex; align-items: baseline; gap: 11px; padding: 9px 10px; border-radius: var(--radius-sm, 4px); font-size: 13.5px; color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease;" style-hover="background: var(--surface-muted); color: var(--imu-blue-600);"><span style="font-family: var(--font-mono); font-size: 11px; color: var(--imu-peri-400);">01</span>專案概況</a>
+      <a href="#fee" style="display: flex; align-items: baseline; gap: 11px; padding: 9px 10px; border-radius: var(--radius-sm, 4px); font-size: 13.5px; color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease;" style-hover="background: var(--surface-muted); color: var(--imu-blue-600);"><span style="font-family: var(--font-mono); font-size: 11px; color: var(--imu-peri-400);">02</span>設計費</a>
+      <a href="#budget" style="display: flex; align-items: baseline; gap: 11px; padding: 9px 10px; border-radius: var(--radius-sm, 4px); font-size: 13.5px; color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease;" style-hover="background: var(--surface-muted); color: var(--imu-blue-600);"><span style="font-family: var(--font-mono); font-size: 11px; color: var(--imu-peri-400);">03</span>工程預算</a>
+      <a href="#process" style="display: flex; align-items: baseline; gap: 11px; padding: 9px 10px; border-radius: var(--radius-sm, 4px); font-size: 13.5px; color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease;" style-hover="background: var(--surface-muted); color: var(--imu-blue-600);"><span style="font-family: var(--font-mono); font-size: 11px; color: var(--imu-peri-400);">04</span>程序</a>
+      <a href="#timeline" style="display: flex; align-items: baseline; gap: 11px; padding: 9px 10px; border-radius: var(--radius-sm, 4px); font-size: 13.5px; color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease;" style-hover="background: var(--surface-muted); color: var(--imu-blue-600);"><span style="font-family: var(--font-mono); font-size: 11px; color: var(--imu-peri-400);">05</span>時程</a>
+      <a href="#org" style="display: flex; align-items: baseline; gap: 11px; padding: 9px 10px; border-radius: var(--radius-sm, 4px); font-size: 13.5px; color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease;" style-hover="background: var(--surface-muted); color: var(--imu-blue-600);"><span style="font-family: var(--font-mono); font-size: 11px; color: var(--imu-peri-400);">06</span>分工</a>
+      <a href="#needs" style="display: flex; align-items: baseline; gap: 11px; padding: 9px 10px; border-radius: var(--radius-sm, 4px); font-size: 13.5px; color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease;" style-hover="background: var(--surface-muted); color: var(--imu-blue-600);"><span style="font-family: var(--font-mono); font-size: 11px; color: var(--imu-peri-400);">07</span>需求訪談</a>
+      <a href="#samples" style="display: flex; align-items: baseline; gap: 11px; padding: 9px 10px; border-radius: var(--radius-sm, 4px); font-size: 13.5px; color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease;" style-hover="background: var(--surface-muted); color: var(--imu-blue-600);"><span style="font-family: var(--font-mono); font-size: 11px; color: var(--imu-peri-400);">08</span>參考風格</a>
     </div>
   </nav>
 
-  <!-- ============ HEADER ============ -->
+  <!-- ============ HEADER (tablet + mobile) ============ -->
   <header id="topbar" style="position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-hairline);">
     <div style="max-width: 920px; margin: 0 auto; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
-      <img src="assets/logo-badge-blue.png" alt="IMU Framework Design" onClick="{{ scrollToTop }}" style="height: 32px; width: 32px; display: block; border-radius: 50%; cursor: pointer;">
+      <img src="assets/logo-badge-blue.png" alt="IMU Framework Design" onClick="{{ scrollToTop }}" style="height: 32px; width: 32px; display: block; border-radius: 50%; flex-shrink: 0; cursor: pointer;">
       <nav id="section-nav" style="display: {{ contentDisplayFlex }}; gap: 18px; align-items: center;">
         <a href="#overview" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted);" style-hover="color: var(--imu-blue-600);">專案概況</a>
         <a href="#fee" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted);" style-hover="color: var(--imu-blue-600);">設計費</a>
@@ -93,7 +117,7 @@
   <main style="max-width: 920px; margin: 0 auto; padding: 64px 28px 0;">
 
     <!-- ============ HERO ============ -->
-    <div data-screen-label="封面" style="padding-bottom: 48px; border-bottom: 1px solid var(--border-hairline);">
+    <div data-reveal="" data-screen-label="封面" style="padding-bottom: 48px; border-bottom: 1px solid var(--border-hairline);">
       <div style="font-family: var(--font-mono); font-size: var(--fs-overline); letter-spacing: var(--ls-overline); text-transform: uppercase; color: var(--imu-blue-600); margin-bottom: 20px;">IMU094 專案評估 · 一畝框作設計</div>
       <h1 style="font-family: var(--font-display); font-size: 36px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); line-height: 1.4; color: var(--text-strong); margin: 0; max-width: 640px;"><span style="font-weight: normal;">展昭南軟二期辦公室<br></span><span style="color: var(--imu-blue-600);">專案報價及服務模式說明</span></h1>
       <p style="margin: 18px 0 0; font-size: 15px; line-height: var(--lh-relaxed); color: var(--text-muted); text-wrap: pretty">本文件彙整本專案相關的報價與流程說明，期能協助貴公司進行決策。正式訂購單與合約將於後續場勘及提案期間提供。</p>
@@ -129,10 +153,10 @@
     <div style="display: {{ contentDisplayBlock }};">
 
     <!-- ============ 01 專案概況 ============ -->
-    <section id="overview" data-screen-label="01 專案概況" style="padding-top: 64px; scroll-margin-top: 24px;">
-      <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px;">
-        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-blue-600); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 2px 8px;">01</span>
-        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0;">專案概況</h2>
+    <section data-reveal="" id="overview" data-screen-label="01 專案概況" style="padding-top: 72px; scroll-margin-top: 24px;">
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+        <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 30px; padding: 0 10px; font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: 0.03em; color: #FFFFFF; background: var(--imu-blue-600); border-radius: var(--radius-sm, 4px); line-height: 1; flex-shrink: 0;">01</span>
+        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0; line-height: 1.15;">專案概況</h2>
       </div>
       <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
       <div style="flex: 1; min-width: 320px; max-width: 560px; display: flex; flex-direction: column;">
@@ -168,12 +192,17 @@
     </section>
 
     <!-- ============ 02 優惠設計費 ============ -->
-    <section id="fee" data-screen-label="02 優惠設計費" style="padding-top: 32px; scroll-margin-top: 24px;">
-      <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px;">
-        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-blue-600); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 2px 8px;">02</span>
-        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0;">設計費報價</h2>
+    <section data-reveal="" id="fee" data-screen-label="02 優惠設計費" style="padding-top: 0; scroll-margin-top: 24px;">
+      <div aria-hidden="true" style="display: flex; align-items: center; justify-content: center; gap: 11px; padding: 64px 0 60px;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
       </div>
-      <p style="display: inline-block; font-size: 13px; color: var(--text-muted); background: var(--surface-sunken); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 7px 14px; margin: 10px 0 20px;">牌價 <span style="font-family: var(--font-mono); font-weight: var(--fw-bold); color: var(--text-strong);">5,500</span> 元/坪（含稅，最小量 90 坪起）</p>
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+        <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 30px; padding: 0 10px; font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: 0.03em; color: #FFFFFF; background: var(--imu-blue-600); border-radius: var(--radius-sm, 4px); line-height: 1; flex-shrink: 0;">02</span>
+        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0; line-height: 1.15;">設計費報價</h2>
+      </div>
+      <p style="display: inline-block; font-size: 13px; color: var(--text-muted); background: var(--surface-sunken); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 7px 14px; margin: 0 0 16px;">牌價 <span style="font-family: var(--font-mono); font-weight: var(--fw-bold); color: var(--text-strong);">5,500</span> 元/坪（含稅，最小量 90 坪起）</p>
 
       <div style="border: 1px solid var(--border-hairline); border-radius: var(--radius-md, 8px); overflow: hidden;">
         <div style="display: grid; grid-template-columns: 1.5fr 1fr 0.8fr; background: var(--surface-inverse); color: var(--imu-white); font-size: 12.5px; letter-spacing: var(--ls-wide); padding: 11px 18px; gap: 12px;">
@@ -209,10 +238,15 @@
     </section>
 
     <!-- ============ 03 建議工程費預算 ============ -->
-    <section id="budget" data-screen-label="03 工程費預算" style="padding-top: 32px; scroll-margin-top: 24px;">
-      <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px;">
-        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-blue-600); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 2px 8px;">03</span>
-        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0;">工程費預算分級參考值</h2>
+    <section data-reveal="" id="budget" data-screen-label="03 工程費預算" style="padding-top: 0; scroll-margin-top: 24px;">
+      <div aria-hidden="true" style="display: flex; align-items: center; justify-content: center; gap: 11px; padding: 64px 0 60px;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+        <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 30px; padding: 0 10px; font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: 0.03em; color: #FFFFFF; background: var(--imu-blue-600); border-radius: var(--radius-sm, 4px); line-height: 1; flex-shrink: 0;">03</span>
+        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0; line-height: 1.15;">工程費預算分級參考值</h2>
       </div>
 
       <div style="display: flex; gap: 0; border-bottom: 1px solid var(--border-hairline);">
@@ -243,24 +277,108 @@
           </sc-for>
         </div>
       </div>
+      <div style="margin-top: 44px;">
+        <h3 style="font-family: var(--font-display); font-size: 17px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0 0 8px;">各包預算推估示意</h3>
+
+        <div style="border: 1px solid var(--border-hairline); border-radius: var(--radius-md, 8px); background: var(--surface-card); padding: 22px 24px; margin-bottom: 22px;">
+          <div style="font-family: var(--font-mono); font-size: var(--fs-overline); letter-spacing: var(--ls-overline); text-transform: uppercase; color: var(--text-subtle); margin-bottom: 8px;">總造價建議預算</div>
+          <div style="font-family: var(--font-mono); font-size: 34px; font-weight: var(--fw-medium); letter-spacing: -0.01em; color: var(--imu-blue-600); line-height: 1.1;">{{ pkgTotal }}</div>
+          <div style="display: flex; height: 8px; margin-top: 18px; border-radius: 2px; overflow: hidden; background: var(--imu-neutral-100);">
+            <div style="width: {{ pkgABarW }}; background: var(--imu-peri-300);"></div>
+            <div style="width: {{ pkgBBarW }}; background: var(--imu-blue-600);"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; gap: 16px; margin-top: 9px; font-size: 11.5px; color: var(--text-subtle);">
+            <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--imu-peri-300);"></span>設計及基礎設施 {{ pkgAPct }}</span>
+            <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--imu-blue-600);"></span>裝修及家具等 {{ pkgBPct }}</span>
+          </div>
+        </div>
+
+
+        <div data-pkg-summary="" style="display: grid; grid-template-columns: 1fr 1fr 250px; gap: 14px; align-items: stretch;">
+          <div style="border: 1px solid var(--border-hairline); border-radius: var(--radius-md, 8px); background: var(--surface-card); padding: 20px 22px 18px;">
+            <div style="font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--imu-peri-400); margin-bottom: 10px;">PART A</div>
+            <div style="font-size: 13.5px; font-weight: var(--fw-semibold); color: var(--text-strong); margin-bottom: 4px;">設計及基礎設施工程預算推估</div>
+            <div style="font-size: 11.5px; line-height: var(--lh-relaxed); color: var(--text-subtle); margin-bottom: 12px; min-height: 34px; text-wrap: pretty;">基礎成本之保守估計，建議保留預算</div>
+            <div style="font-family: var(--font-mono); font-size: 24px; font-weight: var(--fw-medium); color: var(--text-strong); padding-bottom: 18px; border-bottom: 1px solid var(--border-hairline);">{{ pkgATotal }}</div>
+            <div style="font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-subtle); margin: 16px 0 4px;">發包類別</div>
+            <div style="display: flex; align-items: flex-end; gap: 8px; height: 172px; padding-top: 6px; border-bottom: 1px solid var(--imu-neutral-300);">
+              <sc-for list="{{ pkgABars }}" as="b" hint-placeholder-count="4">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%;">
+                  <span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--text-muted); margin-bottom: 5px;">{{ b.label }}</span>
+                  <div style="width: 100%; max-width: 32px; height: {{ b.h }}; background: {{ b.fill }}; border-radius: 2px 2px 0 0; transition: height 0.8s var(--ease-standard, ease);"></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 9px;">
+              <sc-for list="{{ pkgABars }}" as="b" hint-placeholder-count="4">
+                <span style="flex: 1; text-align: center; font-size: 10.5px; line-height: 1.35; color: var(--text-subtle);">{{ b.cat }}</span>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="border: 1px solid var(--border-hairline); border-radius: var(--radius-md, 8px); background: var(--surface-card); padding: 20px 22px 18px;">
+            <div style="font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--imu-peri-400); margin-bottom: 10px;">PART B</div>
+            <div style="font-size: 13.5px; font-weight: var(--fw-semibold); color: var(--text-strong); margin-bottom: 4px;">裝修及家具等工程預算推估</div>
+            <div style="font-size: 11.5px; line-height: var(--lh-relaxed); color: var(--text-subtle); margin-bottom: 12px; min-height: 34px; text-wrap: pretty;">依等級有價格帶差異之部分（以高階為例，往下至少抓 6 成）</div>
+            <div style="font-family: var(--font-mono); font-size: 24px; font-weight: var(--fw-medium); color: var(--text-strong); padding-bottom: 18px; border-bottom: 1px solid var(--border-hairline);">{{ pkgBTotal }}</div>
+            <div style="font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-subtle); margin: 16px 0 4px;">發包類別</div>
+            <div style="display: flex; align-items: flex-end; gap: 8px; height: 172px; padding-top: 6px; border-bottom: 1px solid var(--imu-neutral-300);">
+              <sc-for list="{{ pkgBBars }}" as="b" hint-placeholder-count="4">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%;">
+                  <span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--text-muted); margin-bottom: 5px;">{{ b.label }}</span>
+                  <div style="width: 100%; max-width: 32px; height: {{ b.h }}; background: {{ b.fill }}; border-radius: 2px 2px 0 0; transition: height 0.8s var(--ease-standard, ease);"></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 9px;">
+              <sc-for list="{{ pkgBBars }}" as="b" hint-placeholder-count="4">
+                <span style="flex: 1; text-align: center; font-size: 10.5px; line-height: 1.35; color: var(--text-subtle);">{{ b.cat }}</span>
+              </sc-for>
+            </div>
+            <div style="margin-top: 14px; padding: 11px 13px; border-radius: var(--radius-sm, 4px); background: var(--imu-blue-50, #F4F6FC); font-size: 11.5px; line-height: var(--lh-relaxed); color: var(--text-muted);">往下抓 6 成約 <strong style="font-family: var(--font-mono); font-weight: var(--fw-semibold); color: var(--text-strong);">{{ pkgLowB }}</strong>，總造價約 <strong style="font-family: var(--font-mono); font-weight: var(--fw-semibold); color: var(--text-strong);">{{ pkgLowTotal }}</strong>。</div>
+          </div>
+          <a href="https://imu-framework.notion.site/396bce06871080ec9aebd9b011d4664b?v=396bce068710800fb1dd000c5c736f84" target="_blank" rel="noopener" style="display: flex; flex-direction: column; justify-content: space-between; gap: 20px; border: 1.5px solid var(--imu-blue-600); border-radius: var(--radius-md, 8px); background: var(--surface-card); padding: 20px 22px; text-decoration: none; transition: background 0.2s var(--ease-standard, ease), box-shadow 0.2s var(--ease-standard, ease);" style-hover="background: var(--imu-blue-50, #F4F6FC); box-shadow: var(--shadow-sm, 0 2px 8px rgba(24,36,70,0.06));">
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--imu-blue-600); margin-bottom: 10px;">Source</div>
+              <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 8px;">
+                <span style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border: 1.5px solid var(--text-strong); border-radius: 3px; font-family: var(--font-display); font-size: 14px; font-weight: var(--fw-semibold); color: var(--text-strong); line-height: 1;">N</span>
+                <span style="font-size: 13.5px; font-weight: var(--fw-semibold); color: var(--text-strong);">完整預算資料庫</span>
+              </div>
+              <div style="font-size: 11.5px; line-height: var(--lh-relaxed); color: var(--text-subtle); text-wrap: pretty;">各項單價、數量、供應商與細目維護於 Notion，內容隨專案進度更新。</div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 14px; border-top: 1px solid var(--border-hairline);">
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--imu-blue-600);">開啟資料庫</span>
+              <span style="font-family: var(--font-mono); font-size: 20px; line-height: 1; color: var(--imu-blue-600);">↗</span>
+            </div>
+          </a>
+        </div>
+
+        <div style="font-size: 12.5px; color: var(--text-subtle); margin: 18px 0 0;"><ul><li>以 407 坪、136 席職員／14 席主管推估；單價為市場行情區間，實際依現況丈量、材料選定與發包結果調整。</li><li>未含既有中央空調主機更換、消防主機更換與建築結構補強等（若判定有此類衍伸成本，建議先與樓管協議處理責任）。</li></ul></div>
+
+      </div>
     </section>
 
     <!-- ============ 04 簽約前／簽約後程序 ============ -->
-    <section id="process" data-screen-label="04 簽約程序" style="padding-top: 32px; scroll-margin-top: 24px;">
-      <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px;">
-        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-blue-600); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 2px 8px;">04</span>
-        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0;">簽約前／簽約後程序</h2>
+    <section data-reveal="" id="process" data-screen-label="04 簽約程序" style="padding-top: 0; scroll-margin-top: 24px;">
+      <div aria-hidden="true" style="display: flex; align-items: center; justify-content: center; gap: 11px; padding: 64px 0 60px;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
       </div>
-      <p style="font-size: 13px; color: #5D6273; margin: 0 0 8px;">點擊任一步驟可展開說明。</p>
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+        <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 30px; padding: 0 10px; font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: 0.03em; color: #FFFFFF; background: var(--imu-blue-600); border-radius: var(--radius-sm, 4px); line-height: 1; flex-shrink: 0;">04</span>
+        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0; line-height: 1.15;">簽約前／簽約後程序</h2>
+      </div>
+      <p style="font-size: 13px; color: #5D6273; margin: 0 0 16px;">點擊任一步驟可展開說明。</p>
 
       <div style="position: relative; margin-left: 7px; padding-left: 28px; border-left: 1px solid var(--imu-neutral-300); max-width: 640px;">
         <div style="font-family: var(--font-mono); font-size: var(--fs-overline); letter-spacing: var(--ls-overline); text-transform: uppercase; color: var(--text-subtle); margin-bottom: 12px;">簽約前 PP</div>
         <sc-for list="{{ stepsBefore }}" as="s" hint-placeholder-count="3">
           <div style="position: relative; padding-bottom: 14px;">
-            <div style="position: absolute; left: -35px; top: 14px; width: 12px; height: 12px; border-radius: 50%; background: {{ s.dotBg }}; border: 2px solid var(--imu-peri-400); box-sizing: border-box;"></div>
+            <div style="position: absolute; left: -37px; top: 12px; width: 17px; height: 17px; border-radius: 50%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; color: var(--imu-white, #fff); font-size: 10px; font-weight: 700; line-height: 1; background-color: var(--imu-blue-300)">✓</div>
             <div onClick="{{ s.onClick }}" style="background: var(--surface-card); border: 1px solid var(--border-hairline); border-radius: var(--radius-md, 8px); padding: 12px 16px; cursor: pointer; transition: border-color 0.2s ease, box-shadow 0.2s ease;" style-hover="border-color: var(--imu-blue-400); box-shadow: var(--shadow-sm, 0 2px 8px rgba(24,36,70,0.06));">
               <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 14.5px; font-weight: var(--fw-medium); color: var(--text-strong);">
-                <span><span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-peri-400); margin-right: 10px;">{{ s.num }}</span>{{ s.t }}<span style="font-size: 12px; font-weight: var(--fw-medium); color: var(--imu-blue-300, #8FB4E8); margin-left: 10px;">{{ s.tag }}</span></span>
+                <span><span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-peri-400); margin-right: 10px;">{{ s.num }}</span>{{ s.t }}<span style="font-family: var(--font-mono); font-size: 12px; font-weight: var(--fw-medium); color: var(--imu-blue-300); margin-left: 10px">{{ s.tag }}</span></span>
                 <span style="color: var(--text-subtle); font-size: 11px; transition: transform 0.25s ease; transform: {{ s.chevRot }};">▸</span>
               </div>
               <div style="overflow: hidden; max-height: {{ s.descMax }}; transition: max-height 0.3s ease;">
@@ -314,12 +432,17 @@
     </section>
 
     <!-- ============ 05 詳細時程規劃 ============ -->
-    <section id="timeline" data-screen-label="05 詳細時程規劃" style="padding-top: 32px; scroll-margin-top: 24px;">
-      <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px;">
-        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-blue-600); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 2px 8px;">05</span>
-        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0;">詳細時程推估</h2>
+    <section data-reveal="" id="timeline" data-screen-label="05 詳細時程規劃" style="padding-top: 0; scroll-margin-top: 24px;">
+      <div aria-hidden="true" style="display: flex; align-items: center; justify-content: center; gap: 11px; padding: 64px 0 60px;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
       </div>
-      <p style="font-size: 13px; color: #5D6273; margin: 0 0 8px; max-width: 680px;">以 {{ tlSignDate }} 簽約、{{ tlMoveInDate }} 前入駐為目標，工期以 2 個月編列，逐項推估各階段所需時間。</p>
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+        <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 30px; padding: 0 10px; font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: 0.03em; color: #FFFFFF; background: var(--imu-blue-600); border-radius: var(--radius-sm, 4px); line-height: 1; flex-shrink: 0;">05</span>
+        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0; line-height: 1.15;">詳細時程推估</h2>
+      </div>
+      <p style="font-size: 13px; color: #5D6273; margin: 0 0 16px; max-width: 680px;">以 {{ tlSignDate }} 簽約、{{ tlMoveInDate }} 前入駐為目標，工期以 2 個月編列，逐項推估各階段所需時間。</p>
 
       <div style="display: flex; justify-content: space-between; gap: 20px; margin: 16px 0 26px;">
         <div style="border-top: 2px solid var(--imu-blue-600); padding-top: 10px; flex: 1;">
@@ -391,12 +514,17 @@
     </section>
 
     <!-- ============ 05b 分工組織圖 ============ -->
-    <section id="org" data-screen-label="06 分工組織圖" style="padding-top: 32px; scroll-margin-top: 24px;">
-      <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px;">
-        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-blue-600); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 2px 8px;">06</span>
-        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0;">分工組織圖</h2>
+    <section data-reveal="" id="org" data-screen-label="06 分工組織圖" style="padding-top: 0; scroll-margin-top: 24px;">
+      <div aria-hidden="true" style="display: flex; align-items: center; justify-content: center; gap: 11px; padding: 64px 0 60px;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
       </div>
-      <p style="font-size: 13px; color: #5D6273; margin: 0 0 20px">IMU 統籌整合各協力廠商，並代表專案對甲方提供設計與工程服務、對第三方單位聯繫協調。</p>
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+        <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 30px; padding: 0 10px; font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: 0.03em; color: #FFFFFF; background: var(--imu-blue-600); border-radius: var(--radius-sm, 4px); line-height: 1; flex-shrink: 0;">06</span>
+        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0; line-height: 1.15;">分工組織圖</h2>
+      </div>
+      <p style="font-size: 13px; color: #5D6273; margin: 0 0 16px;">IMU 統籌整合各協力廠商，並代表專案對甲方提供設計與工程服務、對第三方單位聯繫協調。</p>
       <div id="org-grid" style="display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 20px; align-items: start;">
 
         <!-- 左：甲方 -->
@@ -446,10 +574,15 @@
     </section>
 
     <!-- ============ 06 需求確認表 ============ -->
-    <section id="needs" data-screen-label="07 需求確認表" style="padding-top: 32px; scroll-margin-top: 24px;">
-      <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px;">
-        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-blue-600); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 2px 8px;">07</span>
-        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0;">需求確認訪談綱要</h2>
+    <section data-reveal="" id="needs" data-screen-label="07 需求確認表" style="padding-top: 0; scroll-margin-top: 24px;">
+      <div aria-hidden="true" style="display: flex; align-items: center; justify-content: center; gap: 11px; padding: 64px 0 60px;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+        <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 30px; padding: 0 10px; font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: 0.03em; color: #FFFFFF; background: var(--imu-blue-600); border-radius: var(--radius-sm, 4px); line-height: 1; flex-shrink: 0;">07</span>
+        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0; line-height: 1.15;">需求確認訪談綱要</h2>
       </div>
       <p style="font-size: 13px; color: #5D6273; margin: 0 0 16px;">簽約前的初步需求訪談將針對以下面向，向您作進一步了解。若您已有手上能立即提供的資料，歡迎隨時提供。</p>
       <div style="max-width: 640px; display: flex; flex-direction: column;">
@@ -466,19 +599,19 @@
           <span style="font-size: 13px; color: var(--text-muted);">期望完工時間（已透過問卷初步確認）</span>
         </div>
         <div style="display: grid; grid-template-columns: 20px 40px 120px 1fr; gap: 12px; align-items: baseline; padding: 15px 4px; border-bottom: 1px solid var(--border-hairline);">
-          <span style="width: 15px; height: 15px; border: 1.5px solid var(--border-hairline); border-radius: 3px; position: relative; top: 2px;"></span>
+          <span style="width: 15px; height: 15px; border: 1.5px solid var(--imu-blue-600); border-radius: 3px; background: var(--imu-blue-600); display: inline-flex; align-items: center; justify-content: center; position: relative; top: 2px;"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
           <span style="font-family: var(--font-mono); font-size: 11.5px; color: var(--imu-peri-400);">03</span>
           <span style="font-size: 14.5px; font-weight: var(--fw-medium); color: var(--text-strong);">組織需求</span>
-          <span style="font-size: 13px; color: var(--text-muted);">各部門配置與人數、主管室數量、未來成長規劃等</span>
+          <span style="font-size: 13px; color: var(--text-muted);"><span style="background: linear-gradient(to bottom, transparent 50%, oklch(85% 0.15 95 / 0.4) 50%); box-decoration-break: clone; -webkit-box-decoration-break: clone;">公司組織圖</span>（各部門人數）、主管室數量、未來成長規劃等</span>
         </div>
         <div style="display: grid; grid-template-columns: 20px 40px 120px 1fr; gap: 12px; align-items: baseline; padding: 15px 4px; border-bottom: 1px solid var(--border-hairline);">
-          <span style="width: 15px; height: 15px; border: 1.5px solid var(--border-hairline); border-radius: 3px; position: relative; top: 2px;"></span>
+          <span style="width: 15px; height: 15px; border: 1.5px solid var(--imu-blue-600); border-radius: 3px; background: var(--imu-blue-600); display: inline-flex; align-items: center; justify-content: center; position: relative; top: 2px;"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
           <span style="font-family: var(--font-mono); font-size: 11.5px; color: var(--imu-peri-400);">04</span>
           <span style="font-size: 14.5px; font-weight: var(--fw-medium); color: var(--text-strong);">機能需求</span>
           <span style="font-size: 13px; color: var(--text-muted);">接待區、會議室、主管室、座位區、多功能區、收納、作業台等</span>
         </div>
         <div style="display: grid; grid-template-columns: 20px 40px 120px 1fr; gap: 12px; align-items: baseline; padding: 15px 4px; border-bottom: 1px solid var(--border-hairline);">
-          <span style="width: 15px; height: 15px; border: 1.5px solid var(--border-hairline); border-radius: 3px; position: relative; top: 2px;"></span>
+          <span style="width: 15px; height: 15px; border: 1.5px solid var(--imu-blue-600); border-radius: 3px; background: var(--imu-blue-600); display: inline-flex; align-items: center; justify-content: center; position: relative; top: 2px;"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
           <span style="font-family: var(--font-mono); font-size: 11.5px; color: var(--imu-peri-400);">05</span>
           <span style="font-size: 14.5px; font-weight: var(--fw-medium); color: var(--text-strong);">品牌需求</span>
           <span style="font-size: 13px; color: var(--text-muted);">企業識別呈現、對外形象與訪客體驗等</span>
@@ -493,10 +626,15 @@
     </section>
 
     <!-- ============ 07 參考風格 ============ -->
-    <section id="samples" data-screen-label="08 參考風格" style="padding-top: 32px; scroll-margin-top: 24px; padding-bottom: 80px;">
-      <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px;">
-        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--imu-blue-600); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm, 4px); padding: 2px 8px;">08</span>
-        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0;">參考風格</h2>
+    <section data-reveal="" id="samples" data-screen-label="08 參考風格" style="padding-top: 0; scroll-margin-top: 24px; padding-bottom: 80px;">
+      <div aria-hidden="true" style="display: flex; align-items: center; justify-content: center; gap: 11px; padding: 64px 0 60px;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--imu-neutral-300);"></span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 24px;">
+        <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 30px; padding: 0 10px; font-family: var(--font-mono); font-size: 16px; font-weight: 700; letter-spacing: 0.03em; color: #FFFFFF; background: var(--imu-blue-600); border-radius: var(--radius-sm, 4px); line-height: 1; flex-shrink: 0;">08</span>
+        <h2 style="font-family: var(--font-display); font-size: 21px; font-weight: var(--fw-semibold); letter-spacing: var(--ls-heading); color: var(--text-strong); margin: 0; line-height: 1.15;">參考風格</h2>
       </div>
       <p style="font-size: 13px; color: #5D6273; margin: 0 0 16px;">以下為風格參考圖片，作為初步討論方向之用，實際設計將依訪談需求調整。（來源自網路）</p>
       <div id="samples-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 100%; overflow: hidden;">
@@ -543,7 +681,7 @@
   </main>
 
   <!-- ============ FOOTER ============ -->
-  <footer data-screen-label="頁尾" style="display: {{ contentDisplayBlock }}; background: var(--imu-neutral-100); color: var(--text-muted);">
+  <footer data-reveal="" data-screen-label="頁尾" style="display: {{ contentDisplayBlock }}; background: var(--imu-neutral-100); color: var(--text-muted);">
     <div style="max-width: 920px; margin: 0 auto; padding: 56px 28px 40px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap;">
         <div>
@@ -607,15 +745,69 @@ class Component extends DCLogic {
 
   componentDidMount() {
     this._barsTimer = setTimeout(() => this.setState({ barsIn: true }), 120);
+    this._setupReveal();
+  }
+
+  _setupReveal() {
+    const root = document.getElementById('doc-root');
+    if (!root) return;
+    root.classList.add('reveal-on');
+    const els = Array.from(root.querySelectorAll('[data-reveal]'));
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    // Hide only what is off-screen right now. If anything below goes wrong the
+    // content stays visible — nothing can get stuck at opacity 0.
+    els.forEach((el) => {
+      if (el.getBoundingClientRect().top >= vh * 0.85) el.classList.add('reveal-hidden');
+    });
+    const show = (el) => el.classList.remove('reveal-hidden');
+    this._revealCheck = () => {
+      const h = window.innerHeight || document.documentElement.clientHeight;
+      const left = els.filter((el) => el.classList.contains('reveal-hidden'));
+      left.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top < h * 0.92 && r.bottom > 0) show(el);
+      });
+      if (!left.length) this._stopReveal();
+    };
+    window.addEventListener('scroll', this._revealCheck, true);
+    window.addEventListener('resize', this._revealCheck);
+    // Watchdog: independent of scroll events and of any observer teardown.
+    this._revealTick = setInterval(this._revealCheck, 400);
+    if ('IntersectionObserver' in window) {
+      this._io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            show(e.target);
+            this._io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.05, rootMargin: '0px 0px -6% 0px' });
+      els.forEach((el) => { if (el.classList.contains('reveal-hidden')) this._io.observe(el); });
+    } else {
+      els.forEach(show);
+    }
+  }
+
+  _stopReveal() {
+    clearInterval(this._revealTick);
+    if (this._revealCheck) {
+      window.removeEventListener('scroll', this._revealCheck, true);
+      window.removeEventListener('resize', this._revealCheck);
+    }
+    if (this._io) this._io.disconnect();
   }
 
   componentDidUpdate() {
     if (this.budgetImgRef.current && this._budgetImageSrc) {
       this.budgetImgRef.current.src = this._budgetImageSrc;
     }
+    if (this._revealCheck) this._revealCheck();
   }
   componentWillUnmount() {
     clearTimeout(this._barsTimer);
+    // Leave nothing hidden behind on teardown / hot reload.
+    document.querySelectorAll('[data-reveal].reveal-hidden').forEach((el) => el.classList.remove('reveal-hidden'));
+    this._stopReveal();
   }
 
   renderVals() {
@@ -682,15 +874,80 @@ class Component extends DCLogic {
       };
     });
 
+    /* ---- 各發包類別預算推估（Notion 預算資料庫轉置；不隨上方分級連動） ---- */
+    const money = (n) => (n < 0 ? '-NT$' + fmt(-n) : 'NT$' + fmt(n));
+    const PKG_A = [
+      { cat: '設計與簽證', items: [
+        { name: '設計及監管費（六折）', qty: 407, unit: '坪', price: 3850, amt: 1566950, note: '設計、發包整合、專案管理、施工監管' },
+        { name: '設計及監管費優惠', qty: 1, unit: '式', price: -66950, amt: -66950, note: '專案優惠' },
+        { name: '建築師送審代辦費', qty: 1, unit: '式', price: 150000, amt: 150000, note: '二階段室內裝修送審' },
+        { name: '消防設備師簽證', qty: 1, unit: '式', price: 30000, amt: 30000, note: '灑水頭及其他設備變更、新增與會勘' },
+      ] },
+      { cat: '拆除工程', items: [
+        { name: '舊裝修拆除', qty: 400, unit: '坪', price: 2400, amt: 960000, note: '含清運' },
+      ] },
+      { cat: '機電消防工程', items: [
+        { name: '機電與給排水工程', qty: 407, unit: '坪', price: 12300, amt: 5006100, note: '含繪圖、配管配線、電力插座、閥件等' },
+        { name: '消防設備工程', qty: 407, unit: '坪', price: 8500, amt: 3459500, note: '含機房 ISO 滅火設備' },
+      ] },
+      { cat: '弱電工程', items: [
+        { name: '網路佈線工程', qty: 400, unit: '坪', price: 3500, amt: 1400000, note: '含配線、資訊插座、資訊盒等' },
+        { name: '機櫃系統工程', qty: 1, unit: '式', price: 300000, amt: 300000, note: '含移機佈線安裝、機櫃、線架、Port 等' },
+        { name: '門禁監視系統工程', qty: 400, unit: '坪', price: 2000, amt: 800000, note: '含機櫃、線架' },
+        { name: '環境控制工程', qty: null, unit: '', price: null, amt: 0, note: '燈光控制、窗簾控制等，依空間數量待議' },
+      ] },
+      { cat: '空調工程', items: [
+        { name: '空調風管工程', qty: 407, unit: '坪', price: 5000, amt: 2035000, note: '含既設中央空調變更、機房冷風機' },
+      ] },
+    ];
+    const PKG_B = [
+      { cat: '裝修工程', items: [
+        { name: '裝修工程', qty: 400, unit: '坪', price: 85000, amt: 34000000, note: '天花板、隔間、表面飾材、訂製櫃體及造型等（統包 14 項次工程）' },
+      ] },
+      { cat: '地坪工程', items: [
+        { name: '地毯鋪設', qty: 205, unit: '坪', price: 5300, amt: 1086500, note: '進口方塊地毯' },
+        { name: '超耐磨地坪鋪設', qty: 205, unit: '坪', price: 5000, amt: 1025000, note: '中階規格' },
+      ] },
+      { cat: 'OA 採購', items: [
+        { name: '職員辦公傢俱', qty: 136, unit: '席', price: 45000, amt: 6120000, note: '升降桌 NT$30,000 + 人體工學椅 NT$15,000' },
+        { name: '主管辦公傢俱', qty: 14, unit: '席', price: 85000, amt: 1190000, note: '升降桌 NT$50,000 + 人體工學椅 NT$35,000' },
+        { name: 'OA 櫃、會議桌椅、休閒傢俱', qty: 1, unit: '式', price: 300000, amt: 300000, note: '進口' },
+      ] },
+      { cat: '設備採購', items: [
+        { name: '會議設備', qty: 3, unit: '套', price: null, amt: 0, note: '依各會議空間需求待議' },
+      ] },
+    ];
+    const abbr = (n) => (n >= 1e6 ? 'NT$' + Math.round(n / 1e6) + 'M' : 'NT$' + Math.round(n / 1e3) + 'K');
+    const buildChart = (groups, fill) => {
+      const data = groups
+        .map((g) => ({ cat: g.cat, amt: g.items.reduce((s, it) => s + (it.amt || 0), 0) }))
+        .filter((d) => d.amt > 0);
+      const max = Math.max(...data.map((d) => d.amt));
+      const total = data.reduce((s, d) => s + d.amt, 0);
+      const bars = data.map((d) => ({
+        key: d.cat,
+        cat: d.cat,
+        label: abbr(d.amt),
+        fill,
+        h: this.state.barsIn ? Math.max(5, Math.round((d.amt / max) * 158)) + 'px' : '0px',
+      }));
+      return { total, bars };
+    };
+    const pkgA = buildChart(PKG_A, 'var(--imu-peri-400)');
+    const pkgB = buildChart(PKG_B, 'var(--imu-blue-600)');
+    const pkgTotal = pkgA.total + pkgB.total;
+    const pctA = (pkgA.total / pkgTotal) * 100;
+    const pkgLowB = pkgB.total * 0.6;
+
     /* ---- budget tiers ---- */
     const TIER_CAPTIONS = {
       std: '符合基本使用機能，採標準建材與工法；沿用既有OA、設備；採用平價／開架／國產OA傢俱、軟件、設備；不更動既有天花板及地板。適合預算控制導向之空間。',
-      adv: '全面新購OA，國產與進口搭配使用；提升材料、傢俱、設備選品等級；更多客製化櫃體、壁材、造型天花板、造型隔間等細部裝修。兼顧品質與預算之平衡選擇。',
+      adv: '基本等級之水電配置，無涉及大量機電及消防變更；既有／新購、國產／進口OA混搭使用；良好材料、傢俱、設備選品等級；更多客製化櫃體、壁材、造型天花板、造型隔間等細部裝修。兼顧品質與預算之平衡選擇。',
       flag: '涉及較大量現況拆除更動；採用高規格建材、訂製件、全進口OA傢俱、地坪、軟件；特殊造型天花板與隔間；導入智慧照明、自動化、高規格會議設備等系統。',
     };
     const budgets = [
-      { key: 'std', label: '標準', perPing: 45000 },
-      { key: 'adv', label: '進階', perPing: 70000 },
+      { key: 'std', label: '輕量', perPing: 45000 },
+      { key: 'adv', label: '進階', perPing: 80000 },
       { key: 'flag', label: '旗艦', perPing: 140000 },
     ].map((b) => {
       const constr = b.perPing * ping;
@@ -719,9 +976,9 @@ class Component extends DCLogic {
 
     /* ---- process timeline ---- */
     const BEFORE = [
-      { t: '現場場勘', d: '實地勘查空間現況、樑柱、管線位置與大樓限制條件。', tag: '可立即安排' },
-      { t: '需求訪談', d: '了解部門配置、機能需求與品牌呈現方向。', tag: '可安排於場勘同一日' },
-      { t: '平面配置提案', d: '依場勘及訪談結果提出初步空間配置；擬定正式訂購單與合約。', tag: 'T+2 工作日，安排至公司或線上提報' },
+      { t: '現場場勘', d: '實地勘查空間現況、樑柱、管線位置與大樓限制條件。', tag: '07.21' },
+      { t: '需求訪談', d: '了解部門配置、機能需求與品牌呈現方向。', tag: '07.21' },
+      { t: '平面配置提案', d: '依場勘及訪談結果提出初步空間配置；擬定正式訂購單與合約。', tag: '07.27' },
     ];
     const AFTER = [
       { t: '工程預算推演', d: '依平面提案細化各項工程費用估算。' },
@@ -833,6 +1090,17 @@ class Component extends DCLogic {
       budgetBars,
       budgetImgRef: this.budgetImgRef,
       budgetCaption: active.caption,
+      pkgTotal: money(pkgTotal),
+      pkgATotal: money(pkgA.total),
+      pkgBTotal: money(pkgB.total),
+      pkgAPct: pctA.toFixed(1) + '%',
+      pkgBPct: (100 - pctA).toFixed(1) + '%',
+      pkgABarW: pctA.toFixed(1) + '%',
+      pkgBBarW: (100 - pctA).toFixed(1) + '%',
+      pkgABars: pkgA.bars,
+      pkgBBars: pkgB.bars,
+      pkgLowB: money(pkgLowB),
+      pkgLowTotal: money(pkgA.total + pkgLowB),
       bPerPing: fmt(active.perPing),
       bConstr: fmt(active.constr),
       bDesign: fmt(designFee),
